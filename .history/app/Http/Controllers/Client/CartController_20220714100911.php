@@ -1,0 +1,109 @@
+<?php
+
+namespace App\Http\Controllers\Client;
+
+use App\Http\Controllers\Controller;
+use App\Models\Cart;
+use App\Models\CartProduct;
+use App\Models\Coupon;
+use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Http\Request;
+
+class CartController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    protected $cart, $product, $cartProduct, $coupon, $order;
+
+    public function __construct(Cart $cart, Product $product, CartProduct $cartProduct, Coupon $coupon, Order $order)
+    {
+        $this->cart = $cart;
+        $this->product = $product;
+        $this->cartProduct = $cartProduct;
+        $this->coupon = $coupon;
+        $this->order = $order;
+    }
+
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $product = $this->product->findOrFaile($request->product_id);
+        $cart = $this->cart->firstOrCreateBy(auth()->user()->id);
+        $cartProduct = $this->cartProduct->getById($cart->id, $product->id);
+        if($cartProduct) {
+            $quantity = $cartProduct->product_quantity;
+            $cartProduct->update(['product_quantity' => ($quantity + $request->product_cart)])
+        }
+        return back()->with(['mess', 'success']);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}
